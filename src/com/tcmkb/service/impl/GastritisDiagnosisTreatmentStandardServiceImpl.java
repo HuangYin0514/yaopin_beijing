@@ -1,0 +1,5 @@
+package com.tcmkb.service.impl;
+import com.tcmkb.service.GastritisDiagnosisTreatmentStandardService;
+public class GastritisDiagnosisTreatmentStandardServiceImpl implements GastritisDiagnosisTreatmentStandardService{
+
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  default-autowire="byName" 
+    xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">    
+ <bean id="aspectTest" class="com.tcmkb.base.aspects.AspectTest"/>
+ <aop:config>
+    <aop:aspect ref="aspectTest">
+      <aop:pointcut expression="execution(* com.tcmkb.service..*.*(..))" id="testPointCut"/>
+      <aop:before method="before" pointcut-ref="testPointCut"/>
+      <aop:after method="after" pointcut-ref="testPointCut"/>
+      <aop:around method="around" pointcut-ref="testPointCut"/>
+    </aop:aspect>
+ </aop:config>
+ <bean id="checks" class="com.tcmkb.base.aspects.Checks"/>
+ <aop:config>
+    <aop:aspect ref="checks">
+        <aop:pointcut expression="execution(* com.tcmkb.controller..*.*(..))" id="checksPointCut"/>
+        <aop:around method="loginCheck" pointcut-ref="checksPointCut"/>
+    </aop:aspect>
+ </aop:config>
+ 
+ <!-- 事物配置 -->
+ <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"/>
+ <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <tx:method name="*" propagation="REQUIRED"  rollback-for="java.lang.Excpetion"/>
+    </tx:attributes>
+ </tx:advice>
+ 
+ <aop:config>
+    <aop:pointcut expression="execution(* com.tcmkb.service..*.*(..))" id="transactionPointCut"/>
+    <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointCut"/>
+ </aop:config>
+ 
+ </beans>
